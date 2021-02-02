@@ -7,9 +7,9 @@ Una forma de ocupar la herencia y el polimorfismo es a través de módulos. Para
 ```ruby
   module AnimalKigndom
     class Animal
-       def create(params)
+      def create(params)
         self.new(params)
-       end
+      end
     end
 
     class Dog < Animal
