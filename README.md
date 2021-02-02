@@ -29,9 +29,6 @@ Pero ¿cómo aplicamos esto en rails? siguiendo la recomendación de [devblast.c
 
 ```console
   $ rails g model Animal atributos:tipo
-  $ rails g model Dog
-  $ rails g model Cat
-  ...
   $ rails db:migrate
 ```
 
