@@ -1,24 +1,64 @@
-# README
+# Catálogo y sistema de pago
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+## Manejo de productos
 
-Things you may want to cover:
+Se crea el modelo Product con los atributos necesarios. Product será la clase base que luego heredarán los productos digitales y físicos.
 
-* Ruby version
+```console
+$ rails g model Product name description stock price sku
+```
 
-* System dependencies
+Luego se crean los modelos DigitalProduct y PhysicalProduct
 
-* Configuration
+```console
+$ rails g model DigitalProduct
+```
+```console
+$ rails g model PhysicalProduct
+```
 
-* Database creation
+Se crea el modelo Image que tendrá relación polimórfica
 
-* Database initialization
+```console
+$ rails g model Image name image:references{polymorphic}
+```
 
-* How to run the test suite
+se revisan y corren las migraciones con `rails db:migrate`
 
-* Services (job queues, cache servers, search engines, etc.)
+Luego, se especifica la relación de herencia en los modelos DigitalProduct y PhysicalProduct. 
 
-* Deployment instructions
+```ruby
+#app/models/digital_product.rb
+class DigitalProduct < Product
+end
 
-* ...
+#app/models/physical_product.rb
+class PhysicalProduct < Product
+end
+```
+
+Para poder aplicar lo anterior, es necesario decirle a rails que cargue el modelo Product en Digital y PhysicalProduct. Para esto  se crea  un initialiazer en config/initializers llamado product_loading.rb que contiene lo siguiente:
+
+```ruby
+# config/initializers/product_loading.rb
+autoload :DigitalProduct, 'product'
+autoload :PhysicalProduct, 'product'
+```
+
+Para agregar las imágenes se instala Active Storage en la consola con `$ rails active_storage:install` y se corre la migracion  con `rails db:migrate`
+
+Se agregan las relaciones de imagen en los modelos
+
+```ruby
+#app/models/digital_product.rb
+class DigitalProduct < Product
+  has_one_attached :image
+end
+
+#app/models/physical_product.rb
+class PhysicalProduct < Product
+  has_many_attached :images
+end
+```
+
+Y están lista las relaciones de productos, se puede probar en la consola para revisar que estén integradas correctamente
